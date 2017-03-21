@@ -6,7 +6,6 @@ using System.Web.Http;
 using AuthServer.App_Start;
 using Microsoft.Owin.Security.OAuth;
 using System.Security.Claims;
-using System.Linq;
 using System.Security.Principal;
 using Microsoft.Owin.Security.Infrastructure;
 using System.Collections.Concurrent;

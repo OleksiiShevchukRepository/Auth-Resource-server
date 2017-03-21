@@ -56,8 +56,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mongo\MongoDataContext.cs" />
     <Compile Include="Mongo\MongoRepository.cs" />
     <Compile Include="MSSQL\SqlDbContext.cs" />
+    <Compile Include="MSSQL\SqlRepository.cs" />
+    <Compile Include="MSSQL\SqlUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

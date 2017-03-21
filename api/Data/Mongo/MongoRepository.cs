@@ -38,7 +38,7 @@ namespace Data.Mongo
 
         public void Update(TEntity item)
         {
-            _mongoCollection.ReplaceOne(a => a.Id == item.Id, item);
+            _mongoCollection.ReplaceOne(i => i.Id == item.Id, item);
         }
 
         public void Delete(Expression<Func<TEntity, bool>> expression)
@@ -48,24 +48,17 @@ namespace Data.Mongo
 
         public void DeleteAll()
         {
-            _mongoCollection.DeleteMany(_ => true);
+            _mongoCollection.DeleteMany(_=>true);
         }
 
         public IQueryable<TEntity> Where(Expression<Func<TEntity, bool>> expression)
         {
-            return _mongoCollection.AsQueryable().Where(expression);
+           return _mongoCollection.AsQueryable().Where(expression);
         }
 
         public TEntity Single(Expression<Func<TEntity, bool>> expression)
         {
             return _mongoCollection.AsQueryable().SingleOrDefault(expression);
-        }
-
-        protected void UpdateProperty(Expression<Func<TEntity, bool>> expression,
-            UpdateDefinition<TEntity> updateDefinition)
-        {
-            var filter = Builders<TEntity>.Filter.Where(expression);
-            _mongoCollection.UpdateMany(filter, updateDefinition);
         }
     }
 }

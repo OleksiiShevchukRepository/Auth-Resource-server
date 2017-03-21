@@ -46,9 +46,8 @@
     <Compile Include="Entities\Preferable.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Enums\Enums.cs" />
-    <Compile Include="Interfaces\IMongoRepository.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
-    <Compile Include="Interfaces\ISqlRepository.cs" />
+    <Compile Include="Interfaces\IWebApplicationConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -6,13 +6,10 @@ namespace Data.MSSQL
     public class SqlDbContext : DbContext
     {
         public SqlDbContext() : base("name=SqlUsers")
-        {
-            
-        }
+        {}
 
         public SqlDbContext(string connectionString) : base($"name={connectionString}")
-        {
-        }
+        {}
 
         static SqlDbContext()
         {

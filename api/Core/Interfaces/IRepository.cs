@@ -12,7 +12,7 @@ namespace Core.Interfaces
         IQueryable<TEntity> GetAll();
         void Add(TEntity item);
         void Add(IEnumerable<TEntity> items);
-        void Update(TEntity item);
+        void Update(TEntity entity);
         void Delete(Expression<Func<TEntity, bool>> expression);
         void DeleteAll();
         IQueryable<TEntity> Where(Expression<Func<TEntity, bool>> expresson);

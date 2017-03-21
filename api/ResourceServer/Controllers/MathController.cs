@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Collections.Generic;
 using System.Web.Http;
 
 namespace ResourceServer.Controllers
@@ -10,7 +6,7 @@ namespace ResourceServer.Controllers
     [RoutePrefix("Math")]
     public class MathController : ApiController
     {
-        private static List<string> _strings;
+        private readonly 
 
         public MathController()
         {
@@ -19,5 +15,9 @@ namespace ResourceServer.Controllers
         [HttpGet]
         [Route("Add")]
         public IHttpActionResult Add(int a, int b) => Ok(a + b);
+
+        [HttpGet]
+        [Route("Add")]
+        public IHttpActionResult Count() => Ok(a + b);
     }
 }
