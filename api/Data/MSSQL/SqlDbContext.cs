@@ -1,5 +1,6 @@
 ﻿using System.Data.Entity;
 using Core.Entities;
+using Core.Interfaces;
 
 namespace Data.MSSQL
 {
@@ -9,6 +10,9 @@ namespace Data.MSSQL
         {}
 
         public SqlDbContext(string connectionString) : base($"name={connectionString}")
+        {}
+
+        public SqlDbContext(IWebApplicationConfig config) : base($"name={config.SqlDbConnectionString}")
         {}
 
         static SqlDbContext()

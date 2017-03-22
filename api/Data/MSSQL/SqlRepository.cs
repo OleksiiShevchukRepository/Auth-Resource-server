@@ -12,7 +12,6 @@ namespace Data.MSSQL
 {
     internal class SqlRepository<TEntity>: ISqlRepository<TEntity> where TEntity: class, IEntity, new()
     {
-
         private readonly SqlDbContext _context;
         private readonly DbSet<TEntity> _dbSet;
 
