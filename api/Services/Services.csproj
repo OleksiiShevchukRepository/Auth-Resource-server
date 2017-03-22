@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MongoDataService.cs" />
+    <Compile Include="RefreshTokenService.cs" />
     <Compile Include="ServiceInitializer.cs" />
     <Compile Include="SqlDataService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

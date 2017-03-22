@@ -1,4 +1,5 @@
-﻿using Core.Interfaces;
+﻿using System.Configuration;
+using Core.Interfaces;
 
 namespace AuthServer
 {
@@ -6,7 +7,6 @@ namespace AuthServer
     {
         public string MongoDbName { get; }
         public string MongoDbConnectionString { get; }
-        public string SqlDbName { get; }
-        public string SqlDbConnectionString { get; }
+        public string SqlDbName => ConfigurationManager.ConnectionStrings["SqlUsersResourceServer"].ConnectionString;
     }
 }

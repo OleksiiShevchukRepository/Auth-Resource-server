@@ -8,6 +8,7 @@ namespace Data.MSSQL
     {
         private readonly SqlDbContext _sqlDbContext;
         private IRepository<User> _users;
+        private IRepository<RefreshToken> _refreshTokens;
 
         private readonly IWebApplicationConfig _config;
         public SqlUnitOfWork(IWebApplicationConfig config)
@@ -27,5 +28,8 @@ namespace Data.MSSQL
         }
 
         public IRepository<User> Users => _users ?? new SqlRepository<User>(_sqlDbContext);
+
+        public IRepository<RefreshToken> RefreshTokens
+            => _refreshTokens ?? new SqlRepository<RefreshToken>(_sqlDbContext);
     }
 }

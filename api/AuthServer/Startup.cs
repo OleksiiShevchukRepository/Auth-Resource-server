@@ -10,6 +10,8 @@ using System.Security.Principal;
 using Microsoft.Owin.Security.Infrastructure;
 using System.Collections.Concurrent;
 using System.Linq;
+using Core.Interfaces;
+using Ninject;
 
 [assembly: OwinStartup(typeof(AuthServer.ResourceServer.Startup))]
 namespace AuthServer.ResourceServer
@@ -30,28 +32,6 @@ namespace AuthServer.ResourceServer
 
         public void ConfigureOAuth(IAppBuilder app)
         {
-            // Enable the Application Sign In Cookie.
-            //app.UseCookieAuthentication(new CookieAuthenticationOptions
-            //{
-            //    AuthenticationType = "Application",
-            //    AuthenticationMode = AuthenticationMode.Passive,
-            //    LoginPath = new PathString(Paths.LoginPath),
-            //    LogoutPath = new PathString(Paths.LogoutPath),
-            //});
-
-            //// Enable the External Sign In Cookie.
-            //app.SetDefaultSignInAsAuthenticationType("External");
-            //app.UseCookieAuthentication(new CookieAuthenticationOptions
-            //{
-            //    AuthenticationType = "External",
-            //    AuthenticationMode = AuthenticationMode.Passive,
-            //    CookieName = CookieAuthenticationDefaults.CookiePrefix + "External",
-            //    ExpireTimeSpan = TimeSpan.FromMinutes(5),
-            //});
-
-            // Enable Google authentication.
-            //app.UseGoogleAuthentication();
-
             // Setup Authorization Server
             app.UseOAuthAuthorizationServer(new OAuthAuthorizationServerOptions
             {
@@ -59,16 +39,15 @@ namespace AuthServer.ResourceServer
                 TokenEndpointPath = new PathString("/token"),
                 ApplicationCanDisplayErrors = true,
                 AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(60),
-#if DEBUG
                 AllowInsecureHttp = true,
-#endif
                 // Authorization server provider which controls the lifecycle of Authorization Server
                 Provider = new OAuthAuthorizationServerProvider
                 {
                     //OnValidateClientRedirectUri = ValidateClientRedirectUri,
                     OnValidateClientAuthentication = ValidateClientAuthentication,
                     OnGrantResourceOwnerCredentials = GrantResourceOwnerCredentials,
-                    OnGrantClientCredentials = GrantClientCredetails
+                    //OnGrantClientCredentials = GrantClientCredetails,
+                    OnGrantRefreshToken = GrantRefreshToken
                 },
 
                 // Authorization code provider which creates and receives the authorization code.
@@ -83,19 +62,59 @@ namespace AuthServer.ResourceServer
                 {
                     OnCreate = CreateRefreshToken,
                     OnReceive = ReceiveRefreshToken,
+                    OnCreateAsync = CreateRefreshTokenAsync,
+                    OnReceiveAsync = ReceiveRefreshTokenAsync
                 }
             });
         }
 
+        private Task ReceiveRefreshTokenAsync(AuthenticationTokenReceiveContext arg)
+        {
+            throw new NotImplementedException();
+        }
 
+        private Task CreateRefreshTokenAsync(AuthenticationTokenCreateContext arg)
+        {
+            throw new NotImplementedException();
+        }
+
+        private Task GrantRefreshToken(OAuthGrantRefreshTokenContext context)
+        {
+            var reNewIdentity = new ClaimsIdentity(context.Ticket.Identity);
+            context.Validated(reNewIdentity);
+
+            return Task.FromResult<object>(null);
+        }
 
         #region Helpers
         private readonly ConcurrentDictionary<string, string> _authenticationCodes = new ConcurrentDictionary<string, string>(StringComparer.Ordinal);
 
         private Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
-            context.Validated();
+            if (context.ClientId == null)
+            {
+                context.Validated();
+            }
             return Task.FromResult(0);
+        }
+
+        private Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
+        {
+            var userService = NinjectWebCommon.Bootstrapper.Kernel.Get<IUserService>();
+            var currentUser = userService.GetByCredentials(context.UserName, context.Password);
+            if (currentUser == null)
+            {
+                context.SetError("The user name or password is incorrect.");
+                return Task.FromResult<object>(null);
+            }
+
+            var identity = new ClaimsIdentity(OAuthDefaults.AuthenticationType);
+            identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
+            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, currentUser.Id.ToString()));
+
+            context.Validated(identity);
+
+            return Task.FromResult<object>(null);
         }
 
         private void CreateAuthenticationCode(AuthenticationTokenCreateContext context)
@@ -107,23 +126,13 @@ namespace AuthServer.ResourceServer
         private void ReceiveAuthenticationCode(AuthenticationTokenReceiveContext context)
         {
             string value;
-			if (_authenticationCodes.TryRemove(context.Token, out value))
-			{
-				context.DeserializeTicket(value);
-			}
-		}
-
-        private Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
-        {
-            var identity = new ClaimsIdentity(new GenericIdentity(
-               context.UserName, OAuthDefaults.AuthenticationType),
-               context.Scope.Select(x => new Claim("urn:oauth:scope", x))
-               );
-
-            context.Validated(identity);
-
-            return Task.FromResult(0);
+            if (_authenticationCodes.TryRemove(context.Token, out value))
+            {
+                context.DeserializeTicket(value);
+            }
         }
+
+
 
         private Task GrantClientCredetails(OAuthGrantClientCredentialsContext context)
         {
