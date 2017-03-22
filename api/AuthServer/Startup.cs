@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using Microsoft.Owin.Security.Infrastructure;
 using System.Collections.Concurrent;
+using System.Linq;
 
 [assembly: OwinStartup(typeof(AuthServer.ResourceServer.Startup))]
 namespace AuthServer.ResourceServer

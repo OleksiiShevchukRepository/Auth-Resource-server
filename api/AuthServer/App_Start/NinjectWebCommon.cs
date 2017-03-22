@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Web;
+using AuthServer;
 using Core.Interfaces;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using Ninject;
 using Ninject.Web.Common;
-using ResourceServer;
 using Services;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethod(typeof(NinjectWebCommon), "Stop")]
-namespace ResourceServer
+namespace AuthServer
 {
     public class NinjectWebCommon
     {
@@ -47,7 +47,7 @@ namespace ResourceServer
 
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Bind<IWebApplicationConfig>().To<WebApplicationConfig>();
+            kernel.Bind<IWebApplicationConfig>().To<WebApplicatonConfig>();
             ServiceInitializer.RegisterServices(kernel);
         }
     }

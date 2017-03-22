@@ -1,9 +1,8 @@
 ﻿using Core.Entities;
-using Core.Interfaces;
 
-namespace Services
+namespace Core.Interfaces
 {
-    public interface IUserService : IDataService<User>
+    public interface IUserService
     {
         User GetByCredentials(string email, string password);
     }

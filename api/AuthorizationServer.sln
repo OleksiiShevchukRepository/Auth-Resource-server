@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceServer", "ResourceServer\ResourceServer.csproj", "{6781A1F9-6B01-4071-B1F0-AE3725407328}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CF33AB43-6A5B-4FE3-94AE-C7A151639478} = {CF33AB43-6A5B-4FE3-94AE-C7A151639478}
+		{9BB6AA98-1AF9-46DF-A48F-8A957042A665} = {9BB6AA98-1AF9-46DF-A48F-8A957042A665}
+		{2123589A-4763-46F3-9433-C4367039A826} = {2123589A-4763-46F3-9433-C4367039A826}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthServer", "AuthServer\AuthServer.csproj", "{80536E8D-4AA0-48C5-B702-17DF308EBF53}"
 EndProject
