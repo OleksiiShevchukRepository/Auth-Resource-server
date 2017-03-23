@@ -14,12 +14,12 @@ namespace Services
     {
         protected TRepository Repository;
         protected IWebApplicationConfig Config;
-        protected SqlUnitOfWork Context;
+        protected SqlUnitOfWork SqlUnitOfWork;
 
         protected SqlDataService(IWebApplicationConfig config)
         {
             Config = config;
-            Context = new SqlUnitOfWork(Config);
+            SqlUnitOfWork = new SqlUnitOfWork(Config);
             Initialize();
         }
 
@@ -32,21 +32,25 @@ namespace Services
         public void Add(TEntity item)
         {
             Repository.Add(item);
+            SqlUnitOfWork.SaveChanges();
         }
 
         public void Add(IEnumerable<TEntity> items)
         {
             Repository.Add(items);
+            SqlUnitOfWork.SaveChanges();
         }
 
         public void Delete(Expression<Func<TEntity, bool>> expression)
         {
             Repository.Delete(expression);
+            SqlUnitOfWork.SaveChanges();
         }
 
         public void DeleteAll()
         {
             Repository.DeleteAll();
+            SqlUnitOfWork.SaveChanges();
         }
 
         public IQueryable<TEntity> GetAll()
@@ -67,6 +71,7 @@ namespace Services
         public void Update(TEntity item)
         {
             Repository.Update(item);
+            SqlUnitOfWork.SaveChanges();
         }
 
         public IQueryable<TEntity> Where(Expression<Func<TEntity, bool>> expression)

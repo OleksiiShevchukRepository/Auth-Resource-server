@@ -8,6 +8,7 @@ namespace Services
         public static void RegisterServices(IKernel kernel)
         {
             kernel.Bind<IUserService>().To<UserService>();
+            kernel.Bind<IRefreshTokenService>().To<RefreshTokenService>();
         }
     }
 }

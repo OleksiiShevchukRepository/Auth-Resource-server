@@ -10,7 +10,7 @@ namespace Services
 
         protected override void Initialize(out IRepository<User> repository)
         {
-            repository = Context.Users;
+            repository = SqlUnitOfWork.Users;
         }
 
         public User GetByCredentials(string email, string password)

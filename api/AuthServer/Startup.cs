@@ -9,8 +9,12 @@ using System.Security.Claims;
 using System.Security.Principal;
 using Microsoft.Owin.Security.Infrastructure;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
+using Core.Common;
+using Core.Entities;
 using Core.Interfaces;
+using Microsoft.Owin.Security;
 using Ninject;
 
 [assembly: OwinStartup(typeof(AuthServer.ResourceServer.Startup))]
@@ -68,25 +72,55 @@ namespace AuthServer.ResourceServer
             });
         }
 
-        private Task ReceiveRefreshTokenAsync(AuthenticationTokenReceiveContext arg)
+        private Task CreateRefreshTokenAsync(AuthenticationTokenCreateContext context)
         {
-            throw new NotImplementedException();
+            var refreshTokenLifeTimeMinutes = 3;
+            var tokenBody = PasswordHelper.CreateShaHash(context.Ticket.Identity.Name + Guid.NewGuid());
+            var userId = new Guid(context.Ticket.Properties.Dictionary["UserId"]);
+
+            var issuedTokenUtc = DateTime.UtcNow;
+            var refreshToken = new RefreshToken
+            {
+                UserId = userId,
+                Token = PasswordHelper.CreateShaHash(tokenBody),
+                IssuedUtc = issuedTokenUtc,
+                ExpiresUtc = issuedTokenUtc.AddMinutes(refreshTokenLifeTimeMinutes)
+            };
+
+            context.Ticket.Properties.IssuedUtc = refreshToken.IssuedUtc;
+            context.Ticket.Properties.ExpiresUtc = refreshToken.ExpiresUtc;
+            refreshToken.ProtectedTicket = context.SerializeTicket();
+
+            var refreshTokenService = NinjectWebCommon.Bootstrapper.Kernel.Get<IRefreshTokenService>();
+            refreshTokenService.Add(refreshToken);
+            context.SetToken(tokenBody);
+
+            return Task.FromResult<object>(null);
         }
 
-        private Task CreateRefreshTokenAsync(AuthenticationTokenCreateContext arg)
+        private Task ReceiveRefreshTokenAsync(AuthenticationTokenReceiveContext context)
         {
-            throw new NotImplementedException();
+            var hashedRefreshToken = PasswordHelper.CreateShaHash(context.Token);
+            var refreshTokenService = NinjectWebCommon.Bootstrapper.Kernel.Get<IRefreshTokenService>();
+            var existingToken = refreshTokenService.GetByToken(hashedRefreshToken);
+            if (existingToken != null)
+            {
+                context.DeserializeTicket(existingToken.ProtectedTicket);
+                refreshTokenService.Delete(existingToken);
+            }
+
+            return Task.FromResult<object>(null);
         }
 
         private Task GrantRefreshToken(OAuthGrantRefreshTokenContext context)
         {
             var reNewIdentity = new ClaimsIdentity(context.Ticket.Identity);
-            context.Validated(reNewIdentity);
+            var reNewTicket = new AuthenticationTicket(reNewIdentity, context.Ticket.Properties);
+            context.Validated(reNewTicket);
 
             return Task.FromResult<object>(null);
         }
 
-        #region Helpers
         private readonly ConcurrentDictionary<string, string> _authenticationCodes = new ConcurrentDictionary<string, string>(StringComparer.Ordinal);
 
         private Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
@@ -111,8 +145,9 @@ namespace AuthServer.ResourceServer
             var identity = new ClaimsIdentity(OAuthDefaults.AuthenticationType);
             identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, currentUser.Id.ToString()));
-
-            context.Validated(identity);
+            var properties = new AuthenticationProperties(GetAuthenticatedProperties(currentUser));
+            var ticket = new AuthenticationTicket(identity,properties);
+            context.Validated(ticket);
 
             return Task.FromResult<object>(null);
         }
@@ -132,8 +167,6 @@ namespace AuthServer.ResourceServer
             }
         }
 
-
-
         private Task GrantClientCredetails(OAuthGrantClientCredentialsContext context)
         {
             var identity = new ClaimsIdentity(new GenericIdentity(
@@ -148,14 +181,26 @@ namespace AuthServer.ResourceServer
 
         private void CreateRefreshToken(AuthenticationTokenCreateContext context)
         {
-            context.SetToken(context.SerializeTicket());
+            //context.SetToken(context.SerializeTicket());
+            throw new NotImplementedException();
         }
 
         private void ReceiveRefreshToken(AuthenticationTokenReceiveContext context)
         {
-            context.DeserializeTicket(context.Token);
+            // context.DeserializeTicket(context.Token);
+            throw new NotImplementedException();
+
         }
 
-        #endregion
+        private Dictionary<string, string> GetAuthenticatedProperties(User user)
+        {
+            var result = new Dictionary<string, string>
+            {
+                { "UserId", user.Id.ToString() },
+                { "UserName", $"{user.FirstName}{user.LastName}"}
+            };
+
+            return result;
+        }
     }
 }

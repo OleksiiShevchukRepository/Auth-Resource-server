@@ -11,7 +11,7 @@ namespace Services
 
         protected override void Initialize(out IRepository<RefreshToken> repository)
         {
-            repository = Context.RefreshTokens;
+            repository = SqlUnitOfWork.RefreshTokens;
         }
 
         public RefreshToken GetByToken(string token)
@@ -27,6 +27,17 @@ namespace Services
         public void Delete(RefreshToken item)
         {
             Repository.Delete(a => a.Id == item.Id);
+        }
+
+        void IRefreshTokenService.Add(RefreshToken item)
+        {
+            var existingToken = Single(a => a.UserId == item.UserId);
+            if (existingToken != null)
+            {
+                Delete(existingToken);
+            }
+            Add(item);
+            SqlUnitOfWork.SaveChanges();
         }
     }
 }

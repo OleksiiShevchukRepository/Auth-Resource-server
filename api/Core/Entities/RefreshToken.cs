@@ -15,6 +15,6 @@ namespace Core.Entities
 
         [JsonIgnore]
         [IgnoreDataMember]
-        public User User { get; set; }
+        public virtual User User { get; set; }
     }
 }

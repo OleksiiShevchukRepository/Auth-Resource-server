@@ -20,5 +20,7 @@ namespace Core.Interfaces
     }
 
     public interface IMongoRepository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity, new() { }
-    public interface ISqlRepository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity, new() { }
+
+    public interface ISqlRepository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity, new()
+    {}
 }

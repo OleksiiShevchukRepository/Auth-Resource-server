@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using Core.Entities;
 using Core.Interfaces;
+using Data.MSSQL.EntitiesConfigurations;
 
 namespace Data.MSSQL
 {
@@ -21,11 +22,12 @@ namespace Data.MSSQL
         }
 
         public virtual DbSet<User> Users{ get; set; }
+        public virtual DbSet<RefreshToken> RefreshTokens{ get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasKey(a => a.Id);
-            modelBuilder.Entity<RefreshToken>().HasKey(a => a.Id);
+            modelBuilder.Configurations.Add(new UserConfiguration());
+            modelBuilder.Configurations.Add(new RefreshTokenConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }

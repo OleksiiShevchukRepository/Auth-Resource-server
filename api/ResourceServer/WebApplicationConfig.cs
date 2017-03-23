@@ -1,8 +1,7 @@
-﻿using Core.Interfaces;
-
+﻿
 namespace ResourceServer
 {
-    public class WebApplicationConfig : IWebApplicationConfig
+    public class WebApplicationConfig 
     {
         public string MongoDbName { get; }
         public string MongoDbConnectionString { get; }
