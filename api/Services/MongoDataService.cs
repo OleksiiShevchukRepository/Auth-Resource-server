@@ -8,7 +8,7 @@ using Data.Mongo;
 
 namespace Services
 {
-    internal abstract class MongoDataService<TEntity, TRepository> : IDataService<TEntity>
+    public abstract class MongoDataService<TEntity, TRepository> : IDataService<TEntity>
         where TEntity: class, IEntity, new()
         where TRepository: IRepository<TEntity>
     {

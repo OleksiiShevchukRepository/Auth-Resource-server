@@ -11,6 +11,7 @@
     <AssemblyName>Services</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventService.cs" />
     <Compile Include="MongoDataService.cs" />
     <Compile Include="RefreshTokenService.cs" />
     <Compile Include="ServiceInitializer.cs" />

@@ -54,6 +54,7 @@
     <Compile Include="Entities\User.cs" />
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="Interfaces\IDataService.cs" />
+    <Compile Include="Interfaces\IEventService.cs" />
     <Compile Include="Interfaces\IRefreshTokenService.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Interfaces\ISqlUnitOfWork.cs" />

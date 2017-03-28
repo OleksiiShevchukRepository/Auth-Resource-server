@@ -1,11 +1,12 @@
-﻿
+﻿using System.Configuration;
+using Core.Interfaces;
+
 namespace ResourceServer
 {
-    public class WebApplicationConfig 
+    public class WebApplicationConfig  : IWebApplicationConfig
     {
-        public string MongoDbName { get; }
-        public string MongoDbConnectionString { get; }
+        public string MongoDbName => ConfigurationManager.AppSettings["MongoDbName"];
+        public string MongoDbConnectionString => ConfigurationManager.AppSettings["MongoDbConnectionString"].Replace("{DB_NAME}", MongoDbName);
         public string SqlDbName { get; }
-        public string SqlDbConnectionString { get; }
     }
 }
