@@ -7,6 +7,7 @@ using Core.Interfaces;
 namespace ResourceServer.Controllers
 {
     [Authorize]
+    [RoutePrefix("Event")]
     public class EventController : DataApiController<Event, IEventService>
     {
         public EventController(IEventService service) : base(service)

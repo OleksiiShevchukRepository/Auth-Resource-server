@@ -4,7 +4,7 @@ using Core.Interfaces;
 
 namespace Services
 {
-    public class RefreshTokenService : SqlDataService<RefreshToken, IRepository<RefreshToken>>, IRefreshTokenService
+    internal class RefreshTokenService : SqlDataService<RefreshToken, IRepository<RefreshToken>>, IRefreshTokenService
     {
         public RefreshTokenService(IWebApplicationConfig config) : base(config)
         {}

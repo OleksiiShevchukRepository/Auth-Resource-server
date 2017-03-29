@@ -8,7 +8,7 @@ using Data.MSSQL;
 
 namespace Services
 {
-    public abstract class SqlDataService<TEntity, TRepository> : IDataService<TEntity> 
+    internal abstract class SqlDataService<TEntity, TRepository> : IDataService<TEntity> 
         where TEntity : class, IEntity, new()
         where TRepository : IRepository<TEntity>
     {

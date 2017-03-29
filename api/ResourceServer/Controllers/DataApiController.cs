@@ -1,6 +1,7 @@
 ﻿using System.Web.Http;
 using Core.Data;
 using Core.Interfaces;
+using Ninject;
 
 namespace ResourceServer.Controllers
 {
@@ -12,5 +13,10 @@ namespace ResourceServer.Controllers
         {
             Service = service;
         }
+
+        //public DataApiController()
+        //{
+        //    Service = NinjectWebCommon.Bootstrapper.Kernel.Get<TService>();
+        //}
     }
 }
